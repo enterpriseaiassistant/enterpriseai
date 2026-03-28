@@ -6,116 +6,207 @@
 <title>Onboarding Assistant — AI Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   :root {
-    --bg-deep:   #05071a;
-    --accent-1:  #6c63ff;
-    --accent-2:  #00d4ff;
-    --accent-3:  #ff6f91;
-    --accent-4:  #39e09b;
-    --text-pri:  #f0f2ff;
-    --text-sec:  #9ba3cc;
-    --glass-bg:  rgba(255,255,255,0.04);
-    --glass-bdr: rgba(255,255,255,0.09);
-    --this-color: #39e09b;
+    --bg:         #f0f2f8;
+    --bg-card:    #ffffff;
+    --bg-subtle:  #e8eaf2;
+    --accent-1:   #1ab87a;
+    --accent-2:   #0bb5d4;
+    --accent-3:   #f0567a;
+    --accent-4:   #22c98a;
+    --text-pri:   #0f1123;
+    --text-sec:   #5a5f7d;
+    --text-muted: #9096b4;
+    --border:     rgba(0,0,0,0.07);
+    --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-md:  0 2px 8px rgba(0,0,0,0.07), 0 12px 32px rgba(0,0,0,0.07);
   }
+
   html { scroll-behavior: smooth; }
+
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg-deep);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
     color: var(--text-pri);
     min-height: 100vh;
-    overflow-x: hidden;
   }
+
   body::before {
     content: '';
     position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 5% 15%, rgba(57,224,155,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 95% 85%, rgba(0,212,255,0.10) 0%, transparent 55%);
+    background-image:
+      linear-gradient(rgba(26,184,122,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,184,122,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
     pointer-events: none;
   }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 0% 0%, rgba(26,184,122,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 100% 100%, rgba(11,181,212,0.07) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
   .wrap {
     position: relative; z-index: 1;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 0 32px 80px;
+    padding: 0 32px 72px;
   }
+
+  /* NAV */
   nav {
-    position: relative; z-index: 10;
-    padding: 28px 0 0;
-    margin-bottom: 48px;
     display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 0 0; margin-bottom: 40px;
   }
   .back-link {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 0.88rem; color: var(--text-sec);
-    text-decoration: none; font-weight: 400; transition: color 0.2s;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 0.85rem; font-weight: 500; color: var(--text-sec);
+    text-decoration: none; transition: color 0.2s;
   }
-  .back-link:hover { color: var(--text-pri); }
+  .back-link:hover { color: var(--accent-1); }
+  .back-arrow { display: inline-block; transition: transform 0.2s; }
   .back-link:hover .back-arrow { transform: translateX(-3px); }
-  .back-arrow { display: inline-block; transition: transform 0.2s ease; }
   .logo {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.05rem;
-    color: var(--text-pri); text-decoration: none;
-    display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 1rem; color: var(--text-pri);
+    text-decoration: none; display: flex; align-items: center; gap: 8px;
+    letter-spacing: -0.02em;
   }
   .logo-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-    animation: pulse 2.5s ease-in-out infinite;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(135deg, #5b52e8, #0bb5d4);
   }
-  @keyframes pulse { 0%,100% { transform: scale(1); opacity:1; } 50% { transform: scale(1.4); opacity:0.7; } }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-  .page-hero { margin-bottom: 52px; animation: fadeUp 0.6s ease both; }
+
+  /* PAGE HERO */
+  .page-hero { margin-bottom: 36px; animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   .proto-tag {
     display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
-    border: 1px solid rgba(57,224,155,0.3); border-radius: 100px; padding: 4px 12px; margin-bottom: 18px;
-    background: rgba(57,224,155,0.08); color: var(--accent-4);
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; border-radius: 100px;
+    padding: 4px 12px; margin-bottom: 14px;
+    background: rgba(26,184,122,0.09);
+    color: var(--accent-1);
+    border: 1px solid rgba(26,184,122,0.22);
   }
-  .proto-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--this-color); }
+  .proto-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent-1); }
   h1 {
-    font-family: 'Syne', sans-serif; font-weight: 800;
-    font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: clamp(1.9rem, 4vw, 2.8rem);
+    letter-spacing: -0.04em; line-height: 1.1;
+    margin-bottom: 12px; color: var(--text-pri);
   }
   h1 .grad {
-    background: linear-gradient(90deg, var(--accent-4), var(--accent-2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  .subtitle { font-size: 1rem; color: var(--text-sec); line-height: 1.65; max-width: 600px; font-weight: 300; }
-  .divider { height: 1px; background: linear-gradient(90deg, var(--glass-bdr), rgba(255,255,255,0.02)); margin: 36px 0; }
-  .section { margin-bottom: 44px; animation: fadeUp 0.6s ease both; }
-  .section:nth-child(2) { animation-delay: 0.08s; }
-  .section:nth-child(3) { animation-delay: 0.14s; }
-  .section:nth-child(4) { animation-delay: 0.20s; }
-  .section:nth-child(5) { animation-delay: 0.26s; }
-  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-  .section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-  h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; color: var(--text-pri); }
-  .card { background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 16px; padding: 24px 28px; backdrop-filter: blur(8px); }
-  .card p { color: var(--text-sec); font-size: 0.93rem; line-height: 1.7; font-weight: 300; }
-  .items { display: flex; flex-direction: column; gap: 10px; }
-  .item { display: flex; align-items: flex-start; gap: 14px; background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 14px; padding: 15px 20px; transition: border-color 0.2s, background 0.2s; }
-  .item:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
-  .item-marker { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
-  .problem .item-marker { background: rgba(255,111,145,0.15); color: var(--accent-3); }
-  .solution .item-marker { background: rgba(57,224,155,0.12); color: var(--accent-4); }
-  .item p { color: var(--text-sec); font-size: 0.92rem; line-height: 1.6; font-weight: 300; }
-  .diagram-box { background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 16px; overflow: hidden; }
+  .subtitle {
+    font-size: 0.97rem; color: var(--text-sec);
+    line-height: 1.65; max-width: 580px; font-weight: 400;
+  }
+
+  /* THREE COLUMN */
+  .three-col {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 32px;
+    animation: fadeUp 0.5s 0.1s ease both;
+  }
+  .col-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px 20px;
+    box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 14px;
+  }
+  .col-card-header { display: flex; align-items: center; gap: 10px; }
+  .col-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; flex-shrink: 0;
+  }
+  .col-icon.overview  { background: rgba(26,184,122,0.1); }
+  .col-icon.problem   { background: rgba(240,86,122,0.1); }
+  .col-icon.solution  { background: rgba(34,201,138,0.1); }
+  .col-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 0.95rem; color: var(--text-pri); letter-spacing: -0.01em;
+  }
+  .col-body { display: flex; flex-direction: column; gap: 9px; }
+  .col-body p { font-size: 0.875rem; color: var(--text-sec); line-height: 1.65; font-weight: 400; }
+  .col-item { display: flex; align-items: flex-start; gap: 9px; }
+  .col-marker {
+    width: 18px; height: 18px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.62rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+  .col-marker.p { background: rgba(240,86,122,0.12); color: var(--accent-3); }
+  .col-marker.s { background: rgba(34,201,138,0.12); color: var(--accent-4); }
+  .col-item p { font-size: 0.855rem; color: var(--text-sec); line-height: 1.6; font-weight: 400; }
+  .col-card.overview { border-top: 3px solid var(--accent-1); }
+  .col-card.problem  { border-top: 3px solid var(--accent-3); }
+  .col-card.solution { border-top: 3px solid var(--accent-4); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 8px 0 32px; }
+
+  /* ARCHITECTURE SECTION */
+  .arch-section { animation: fadeUp 0.5s 0.2s ease both; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .section-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.95rem; flex-shrink: 0;
+    background: rgba(26,184,122,0.1);
+  }
+  h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700; font-size: 1.05rem;
+    color: var(--text-pri); letter-spacing: -0.02em;
+  }
+  .diagram-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md);
+  }
   .diagram-box img { width: 100%; height: auto; display: block; }
-  .diagram-label { font-size: 0.75rem; color: var(--text-sec); letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 20px; border-top: 1px solid var(--glass-bdr); opacity: 0.6; }
-  .diagram-placeholder { min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-sec); font-size: 0.88rem; opacity: 0.4; padding: 40px; text-align: center; }
-  .diagram-placeholder .ph-icon { font-size: 2rem; }
-  .page-footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--glass-bdr); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .page-footer a { font-size: 0.85rem; color: var(--text-sec); text-decoration: none; transition: color 0.2s; }
-  .page-footer a:hover { color: var(--text-pri); }
-  .next-link { display: inline-flex; align-items: center; gap: 6px; }
-  .next-arrow { display: inline-block; transition: transform 0.2s ease; }
-  .page-footer .next-link:hover .next-arrow { transform: translateX(3px); }
-  @media (max-width: 600px) { .wrap { padding: 0 20px 60px; } h1 { font-size: 1.9rem; } }
+  .diagram-label {
+    font-size: 0.72rem; color: var(--text-muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 11px 18px; border-top: 1px solid var(--border);
+  }
+  .diagram-placeholder {
+    min-height: 220px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    color: var(--text-muted); font-size: 0.85rem; padding: 40px; text-align: center;
+  }
+  .diagram-placeholder .ph-icon { font-size: 2rem; opacity: 0.35; }
+  .diagram-placeholder .ph-hint { font-size: 0.75rem; opacity: 0.55; }
+
+  /* FOOTER */
+  .page-footer {
+    margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .page-footer a {
+    font-size: 0.83rem; font-weight: 500; color: var(--text-sec);
+    text-decoration: none; transition: color 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .page-footer a:hover { color: var(--accent-1); }
+  .next-arrow { display: inline-block; transition: transform 0.2s; }
+  .page-footer a:hover .next-arrow { transform: translateX(3px); }
+
+  @media (max-width: 720px) { .three-col { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { .wrap { padding: 0 18px 60px; } h1 { font-size: 1.8rem; } }
 </style>
 </head>
 <body>
@@ -134,103 +225,91 @@
     <div class="proto-tag">
       <span class="proto-tag-dot"></span> Prototype 02 · Guided UX
     </div>
-    <h1>Onboarding<br><span class="grad">Assistant</span></h1>
+    <h1>Onboarding <span class="grad">Assistant</span></h1>
     <p class="subtitle">A guided onboarding prototype that walks users through setup steps, prevents missed tasks, and delivers a consistent experience at scale.</p>
   </div>
 
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon" style="background:rgba(57,224,155,0.12)">📋</div>
-      <h2>Overview</h2>
+  <!-- THREE COLUMN: Overview | Problem | Solution -->
+  <div class="three-col">
+
+    <div class="col-card overview">
+      <div class="col-card-header">
+        <div class="col-icon overview">📋</div>
+        <div class="col-title">Overview</div>
+      </div>
+      <div class="col-body">
+        <p>Onboarding Assistant is a prototype designed to help users move through onboarding steps more easily by providing guided, step-by-step assistance. It reduces confusion, minimises missed tasks, and makes the onboarding experience consistent regardless of who is providing support.</p>
+      </div>
     </div>
-    <div class="card">
-      <p>Onboarding Assistant is a prototype designed to help users move through onboarding steps more easily by providing guided, step-by-step assistance. It reduces confusion, minimises missed tasks, and makes the onboarding experience consistent regardless of who is providing support.</p>
+
+    <div class="col-card problem">
+      <div class="col-card-header">
+        <div class="col-icon problem">⚠️</div>
+        <div class="col-title">Current Problem</div>
+      </div>
+      <div class="col-body">
+        <div class="col-item">
+          <div class="col-marker p">!</div>
+          <p>Users don't know the right sequence of onboarding steps, leading to confusion and delays early in the process.</p>
+        </div>
+        <div class="col-item">
+          <div class="col-marker p">!</div>
+          <p>Important setup tasks are easily missed or delayed without structured guidance, causing downstream issues.</p>
+        </div>
+        <div class="col-item">
+          <div class="col-marker p">!</div>
+          <p>Onboarding quality varies depending on who provides support — no consistent, repeatable experience exists.</p>
+        </div>
+      </div>
     </div>
+
+    <div class="col-card solution">
+      <div class="col-card-header">
+        <div class="col-icon solution">✅</div>
+        <div class="col-title">How It Helps</div>
+      </div>
+      <div class="col-body">
+        <div class="col-item">
+          <div class="col-marker s">✓</div>
+          <p>Guides users step by step through every onboarding task, ensuring the right actions happen in the right order.</p>
+        </div>
+        <div class="col-item">
+          <div class="col-marker s">✓</div>
+          <p>Reduces dependency on manual back-and-forth communication between users and support teams.</p>
+        </div>
+        <div class="col-item">
+          <div class="col-marker s">✓</div>
+          <p>Delivers a consistent and clear onboarding journey for every user, independent of who is supporting them.</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="divider"></div>
 
-  <div class="section">
+  <!-- ARCHITECTURE DIAGRAM -->
+  <div class="arch-section">
     <div class="section-header">
-      <div class="section-icon" style="background:rgba(255,111,145,0.12)">⚠️</div>
-      <h2>Current Problem</h2>
-    </div>
-    <div class="items problem">
-      <div class="item">
-        <div class="item-marker">!</div>
-        <p>Users often don't know the right sequence of onboarding steps, leading to confusion and delays early in the process.</p>
-      </div>
-      <div class="item">
-        <div class="item-marker">!</div>
-        <p>Important setup tasks are easily missed or delayed without structured guidance, causing downstream issues.</p>
-      </div>
-      <div class="item">
-        <div class="item-marker">!</div>
-        <p>Onboarding quality varies depending on who provides support — there's no consistent, repeatable experience.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon" style="background:rgba(57,224,155,0.12)">✅</div>
-      <h2>How It Helps</h2>
-    </div>
-    <div class="items solution">
-      <div class="item">
-        <div class="item-marker">✓</div>
-        <p>Guides users step by step through every onboarding task, ensuring the right actions happen in the right order.</p>
-      </div>
-      <div class="item">
-        <div class="item-marker">✓</div>
-        <p>Reduces dependency on manual back-and-forth communication between users and support teams.</p>
-      </div>
-      <div class="item">
-        <div class="item-marker">✓</div>
-        <p>Delivers a consistent and clear onboarding journey for every user, independent of who is supporting them.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon" style="background:rgba(0,212,255,0.10)">🗺️</div>
-      <h2>Use Case Diagram</h2>
-    </div>
-    <div class="diagram-box">
-      <!-- Replace with: <img src="your-use-case-diagram.png" alt="Use Case Diagram"> -->
-      <div class="diagram-placeholder">
-        <div class="ph-icon">🗺️</div>
-        <div>Upload your use case diagram image here</div>
-        <div style="font-size:0.78rem;opacity:0.6;">Replace this block with an &lt;img&gt; tag pointing to your image file</div>
-      </div>
-      <div class="diagram-label">Use Case Diagram · Onboarding Assistant</div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon" style="background:rgba(57,224,155,0.12)">🏗️</div>
+      <div class="section-icon">🏗️</div>
       <h2>Architecture Diagram</h2>
     </div>
     <div class="diagram-box">
-      <!-- Replace with: <img src="your-architecture-diagram.png" alt="Architecture Diagram"> -->
+      <!-- Replace placeholder with: <img src="your-architecture-diagram.png" alt="Architecture Diagram"> -->
       <div class="diagram-placeholder">
         <div class="ph-icon">🏗️</div>
         <div>Upload your architecture diagram image here</div>
-        <div style="font-size:0.78rem;opacity:0.6;">Replace this block with an &lt;img&gt; tag pointing to your image file</div>
+        <div class="ph-hint">Replace this block with &lt;img src="filename.png" alt="Architecture Diagram"&gt;</div>
       </div>
       <div class="diagram-label">Architecture Diagram · Onboarding Assistant</div>
     </div>
   </div>
 
   <div class="page-footer">
-    <a class="back-link" href="index.html">
-      <span class="back-arrow">←</span> Back to All Prototypes
+    <a href="index.html">
+      <span>←</span> Back to All Prototypes
     </a>
-    <a class="next-link" href="ticket-intake-automation.html">
+    <a href="ticket-intake-automation.html">
       Next: Ticket Intake Automation <span class="next-arrow">→</span>
     </a>
   </div>
