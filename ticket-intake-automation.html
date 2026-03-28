@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ticket Intake Automation — AI Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-deep:   #05071a;
+    --accent-1:  #6c63ff;
+    --accent-2:  #00d4ff;
+    --accent-3:  #ff6f91;
+    --accent-4:  #39e09b;
+    --text-pri:  #f0f2ff;
+    --text-sec:  #9ba3cc;
+    --glass-bg:  rgba(255,255,255,0.04);
+    --glass-bdr: rgba(255,255,255,0.09);
+    --this-color: #ff6f91;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-pri);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 5% 15%, rgba(255,111,145,0.09) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 95% 85%, rgba(108,99,255,0.12) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
+  nav { position: relative; z-index: 10; padding: 28px 0 0; margin-bottom: 48px; display: flex; align-items: center; justify-content: space-between; }
+  .back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text-sec); text-decoration: none; font-weight: 400; transition: color 0.2s; }
+  .back-link:hover { color: var(--text-pri); }
+  .back-link:hover .back-arrow { transform: translateX(-3px); }
+  .back-arrow { display: inline-block; transition: transform 0.2s ease; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--text-pri); text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em; }
+  .logo-dot { width: 7px; height: 7px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); animation: pulse 2.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.4); opacity:0.7; } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .page-hero { margin-bottom: 52px; animation: fadeUp 0.6s ease both; }
+  .proto-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid rgba(255,111,145,0.3); border-radius: 100px; padding: 4px 12px; margin-bottom: 18px; background: rgba(255,111,145,0.08); color: var(--accent-3); }
+  .proto-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--this-color); }
+  h1 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px; }
+  h1 .grad { background: linear-gradient(90deg, var(--accent-3), var(--accent-1)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { font-size: 1rem; color: var(--text-sec); line-height: 1.65; max-width: 600px; font-weight: 300; }
+  .divider { height: 1px; background: linear-gradient(90deg, var(--glass-bdr), rgba(255,255,255,0.02)); margin: 36px 0; }
+  .section { margin-bottom: 44px; animation: fadeUp 0.6s ease both; }
+  .section:nth-child(2) { animation-delay: 0.08s; }
+  .section:nth-child(3) { animation-delay: 0.14s; }
+  .section:nth-child(4) { animation-delay: 0.20s; }
+  .section:nth-child(5) { animation-delay: 0.26s; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  h2 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; color: var(--text-pri); }
+  .card { background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 16px; padding: 24px 28px; backdrop-filter: blur(8px); }
+  .card p { color: var(--text-sec); font-size: 0.93rem; line-height: 1.7; font-weight: 300; }
+  .items { display: flex; flex-direction: column; gap: 10px; }
+  .item { display: flex; align-items: flex-start; gap: 14px; background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 14px; padding: 15px 20px; transition: border-color 0.2s, background 0.2s; }
+  .item:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); }
+  .item-marker { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .problem .item-marker { background: rgba(255,111,145,0.15); color: var(--accent-3); }
+  .solution .item-marker { background: rgba(57,224,155,0.12); color: var(--accent-4); }
+  .item p { color: var(--text-sec); font-size: 0.92rem; line-height: 1.6; font-weight: 300; }
+
+  /* PIPELINE FLOW — unique to this page */
+  .pipeline {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .pipe-step {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: var(--glass-bg); border: 1px solid var(--glass-bdr);
+    padding: 16px 20px; position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .pipe-step:first-child { border-radius: 14px 14px 0 0; }
+  .pipe-step:last-child  { border-radius: 0 0 14px 14px; border-top: none; }
+  .pipe-step:not(:first-child):not(:last-child) { border-top: none; }
+  .pipe-step:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); }
+  .pipe-step + .pipe-step { margin-top: -1px; }
+  .pipe-num {
+    width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 700; margin-top: 1px;
+    background: rgba(255,111,145,0.12); color: var(--accent-3);
+  }
+  .pipe-content {}
+  .pipe-title { font-size: 0.9rem; font-weight: 500; color: var(--text-pri); margin-bottom: 3px; }
+  .pipe-desc { font-size: 0.85rem; color: var(--text-sec); line-height: 1.55; font-weight: 300; }
+
+  .diagram-box { background: var(--glass-bg); border: 1px solid var(--glass-bdr); border-radius: 16px; overflow: hidden; }
+  .diagram-box img { width: 100%; height: auto; display: block; }
+  .diagram-label { font-size: 0.75rem; color: var(--text-sec); letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 20px; border-top: 1px solid var(--glass-bdr); opacity: 0.6; }
+  .diagram-placeholder { min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--text-sec); font-size: 0.88rem; opacity: 0.4; padding: 40px; text-align: center; }
+  .diagram-placeholder .ph-icon { font-size: 2rem; }
+  .page-footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--glass-bdr); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .page-footer a { font-size: 0.85rem; color: var(--text-sec); text-decoration: none; transition: color 0.2s; }
+  .page-footer a:hover { color: var(--text-pri); }
+  .next-link { display: inline-flex; align-items: center; gap: 6px; }
+  .next-arrow { display: inline-block; transition: transform 0.2s ease; }
+  .page-footer .next-link:hover .next-arrow { transform: translateX(3px); }
+  @media (max-width: 600px) { .wrap { padding: 0 20px 60px; } h1 { font-size: 1.9rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="back-link" href="index.html">
+      <span class="back-arrow">←</span> All Prototypes
+    </a>
+    <a class="logo" href="index.html">
+      <span class="logo-dot"></span> Enterprise AI
+    </a>
+  </nav>
+
+  <div class="page-hero">
+    <div class="proto-tag">
+      <span class="proto-tag-dot"></span> Prototype 03 · Automation
+    </div>
+    <h1>Ticket Intake<br><span class="grad">Automation</span></h1>
+    <p class="subtitle">End-to-end automation that reads incoming emails, classifies issues, routes to Jira or ServiceNow, creates tickets, notifies users, and logs a full audit trail.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,111,145,0.12)">📋</div>
+      <h2>Overview</h2>
+    </div>
+    <div class="card">
+      <p>AI Intake Router is an automation prototype that processes incoming support emails from start to finish — without any manual intervention. It reads the email, extracts the issue details, classifies the request type, determines the correct destination system, and handles ticket creation, user notification, work assignment, and audit logging automatically.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,111,145,0.12)">⚠️</div>
+      <h2>Current Problem</h2>
+    </div>
+    <div class="items problem">
+      <div class="item">
+        <div class="item-marker">!</div>
+        <p>Support emails arrive unstructured and require a human to read, interpret, and manually extract the relevant issue details.</p>
+      </div>
+      <div class="item">
+        <div class="item-marker">!</div>
+        <p>Teams must manually decide whether each issue belongs in Jira or ServiceNow — a judgement call that varies by person.</p>
+      </div>
+      <div class="item">
+        <div class="item-marker">!</div>
+        <p>Ticket creation, user updates, work assignment, and audit logging are repetitive, time-consuming steps done by hand.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(57,224,155,0.12)">✅</div>
+      <h2>How It Helps</h2>
+    </div>
+    <div class="items solution">
+      <div class="item">
+        <div class="item-marker">✓</div>
+        <p>Automatically reads and extracts issue details from incoming support emails — no manual reading required.</p>
+      </div>
+      <div class="item">
+        <div class="item-marker">✓</div>
+        <p>Classifies the issue type and routes it to the correct system — Jira for engineering, ServiceNow for IT operations.</p>
+      </div>
+      <div class="item">
+        <div class="item-marker">✓</div>
+        <p>Creates the ticket, emails the requester with the ticket number, assigns the work, and logs every action in an audit trail.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.10)">⚡</div>
+      <h2>Automation Pipeline</h2>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-num">1</div>
+        <div class="pipe-content">
+          <div class="pipe-title">Email Received</div>
+          <div class="pipe-desc">Incoming support email is captured and passed to the AI processing pipeline.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">2</div>
+        <div class="pipe-content">
+          <div class="pipe-title">Issue Extraction</div>
+          <div class="pipe-desc">AI reads the email body and extracts key details — issue type, urgency, affected system, requester info.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">3</div>
+        <div class="pipe-content">
+          <div class="pipe-title">Classification & Routing</div>
+          <div class="pipe-desc">Issue is classified and routed to the correct platform — Jira for dev/engineering or ServiceNow for IT ops.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">4</div>
+        <div class="pipe-content">
+          <div class="pipe-title">Ticket Creation</div>
+          <div class="pipe-desc">A fully structured ticket is created in the target system with all extracted fields populated.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">5</div>
+        <div class="pipe-content">
+          <div class="pipe-title">User Notification</div>
+          <div class="pipe-desc">A confirmation email is sent to the requester with their ticket number and expected next steps.</div>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">6</div>
+        <div class="pipe-content">
+          <div class="pipe-title">Assignment & Audit Logging</div>
+          <div class="pipe-desc">Work is assigned to the appropriate team or individual, and every action is recorded in the audit trail.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(0,212,255,0.10)">🗺️</div>
+      <h2>Use Case Diagram</h2>
+    </div>
+    <div class="diagram-box">
+      <!-- Replace with: <img src="your-use-case-diagram.png" alt="Use Case Diagram"> -->
+      <div class="diagram-placeholder">
+        <div class="ph-icon">🗺️</div>
+        <div>Upload your use case diagram image here</div>
+        <div style="font-size:0.78rem;opacity:0.6;">Replace this block with an &lt;img&gt; tag pointing to your image file</div>
+      </div>
+      <div class="diagram-label">Use Case Diagram · Ticket Intake Automation</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(255,111,145,0.12)">🏗️</div>
+      <h2>Architecture Diagram</h2>
+    </div>
+    <div class="diagram-box">
+      <!-- Replace with: <img src="your-architecture-diagram.png" alt="Architecture Diagram"> -->
+      <div class="diagram-placeholder">
+        <div class="ph-icon">🏗️</div>
+        <div>Upload your architecture diagram image here</div>
+        <div style="font-size:0.78rem;opacity:0.6;">Replace this block with an &lt;img&gt; tag pointing to your image file</div>
+      </div>
+      <div class="diagram-label">Architecture Diagram · Ticket Intake Automation</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <a class="back-link" href="index.html">
+      <span class="back-arrow">←</span> Back to All Prototypes
+    </a>
+    <a class="next-link" href="enterprise-assistant.html">
+      Back to: Enterprise Assistant <span class="next-arrow">→</span>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>

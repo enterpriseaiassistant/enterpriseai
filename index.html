@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enterprise AI — AI Prototype Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-deep:    #05071a;
+    --bg-mid:     #0b0f2e;
+    --accent-1:   #6c63ff;
+    --accent-2:   #00d4ff;
+    --accent-3:   #ff6f91;
+    --accent-4:   #39e09b;
+    --text-pri:   #f0f2ff;
+    --text-sec:   #9ba3cc;
+    --glass-bg:   rgba(255,255,255,0.04);
+    --glass-bdr:  rgba(255,255,255,0.09);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-pri);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND MESH ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgba(108,99,255,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,212,255,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,111,145,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ── NOISE GRAIN ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: relative; z-index: 10;
+    padding: 28px 0 0;
+  }
+  nav .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--text-pri);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    display: inline-block;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+  }
+  .nav-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-2);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: rgba(0,212,255,0.06);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    animation: fadeUp 0.7s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-1);
+    margin-bottom: 22px;
+  }
+  .hero-eyebrow span {
+    width: 24px; height: 1px;
+    background: var(--accent-1);
+    opacity: 0.6;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 22px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.08rem;
+    color: var(--text-sec);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-sec);
+    margin-bottom: 24px;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .card {
+    position: relative;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-bdr);
+    border-radius: 20px;
+    padding: 28px 26px 24px;
+    text-decoration: none;
+    color: var(--text-pri);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    backdrop-filter: blur(12px);
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 20px 20px 0 0;
+    transition: opacity 0.25s ease;
+    opacity: 0;
+  }
+  .card-1::before { background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); }
+  .card-2::before { background: linear-gradient(90deg, var(--accent-4), var(--accent-2)); }
+  .card-3::before { background: linear-gradient(90deg, var(--accent-3), var(--accent-1)); }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.07);
+  }
+  .card:hover::before { opacity: 1; }
+
+  /* card glow on hover */
+  .card-1:hover { box-shadow: 0 20px 60px rgba(108,99,255,0.18); }
+  .card-2:hover { box-shadow: 0 20px 60px rgba(57,224,155,0.15); }
+  .card-3:hover { box-shadow: 0 20px 60px rgba(255,111,145,0.15); }
+
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .card-1 .card-icon { background: rgba(108,99,255,0.15); }
+  .card-2 .card-icon { background: rgba(57,224,155,0.12); }
+  .card-3 .card-icon { background: rgba(255,111,145,0.12); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    color: var(--text-sec);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    font-weight: 300;
+    flex: 1;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-sec);
+    background: rgba(255,255,255,0.04);
+  }
+
+  .card-cta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+  .card-1 .card-cta { color: var(--accent-1); }
+  .card-2 .card-cta { color: var(--accent-4); }
+  .card-3 .card-cta { color: var(--accent-3); }
+
+  .card-cta .arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  .card:hover .arrow { transform: translateX(4px); }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 0 32px;
+    color: var(--text-sec);
+    font-size: 0.82rem;
+    opacity: 0.6;
+    animation: fadeUp 0.7s 0.5s ease both;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .cards { grid-template-columns: 1fr; }
+    .hero { padding: 60px 0 40px; }
+  }
+  @media (max-width: 540px) {
+    .wrap { padding: 0 20px; }
+    .hero h1 { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="inner">
+      <a class="logo" href="index.html">
+        <span class="logo-dot"></span>
+        Enterprise AI
+      </a>
+      <span class="nav-badge">Prototype Showcase</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span></span> Built by Srini <span></span>
+    </div>
+    <h1>AI Prototypes for<br><span class="grad">Enterprise Workflows</span></h1>
+    <p>A collection of AI-powered prototypes designed to automate support operations, streamline onboarding, and reduce manual effort across enterprise systems.</p>
+  </section>
+
+  <p class="section-label">Select a prototype to explore</p>
+
+  <div class="cards">
+
+    <a class="card card-1" href="enterprise-assistant.html">
+      <div class="card-icon">🤖</div>
+      <div class="card-title">Enterprise Assistant</div>
+      <p class="card-desc">An AI-powered support prototype that structures internal requests, improves workflow consistency, and reduces manual triage effort.</p>
+      <div class="card-tags">
+        <span class="tag">Conversational AI</span>
+        <span class="tag">Support</span>
+        <span class="tag">Workflow</span>
+      </div>
+      <div class="card-cta">View Prototype <span class="arrow">→</span></div>
+    </a>
+
+    <a class="card card-2" href="onboarding-assistant.html">
+      <div class="card-icon">🧭</div>
+      <div class="card-title">Onboarding Assistant</div>
+      <p class="card-desc">A guided onboarding prototype that walks users through setup steps, prevents missed tasks, and delivers a consistent onboarding experience.</p>
+      <div class="card-tags">
+        <span class="tag">Guided UX</span>
+        <span class="tag">Onboarding</span>
+        <span class="tag">Automation</span>
+      </div>
+      <div class="card-cta">View Prototype <span class="arrow">→</span></div>
+    </a>
+
+    <a class="card card-3" href="ticket-intake-automation.html">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Ticket Intake Automation</div>
+      <p class="card-desc">End-to-end automation that reads emails, classifies issues, routes to Jira or ServiceNow, creates tickets, notifies users, and logs an audit trail.</p>
+      <div class="card-tags">
+        <span class="tag">Automation</span>
+        <span class="tag">Jira</span>
+        <span class="tag">ServiceNow</span>
+        <span class="tag">Email AI</span>
+      </div>
+      <div class="card-cta">View Prototype <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+
+  <footer>
+    Built with care · More prototypes coming soon
+  </footer>
+</div>
+
+</body>
+</html>
